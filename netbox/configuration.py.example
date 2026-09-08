@@ -1,0 +1,71 @@
+# Fragmento consolidado de /opt/netbox/netbox/netbox/configuration.py
+# Copia estos bloques sobre la configuration.py real generada a partir
+# de configuration_example.py (incluido en el propio repo de NetBox).
+# Sustituye los placeholders por valores reales; este fichero NUNCA
+# debe subirse con datos reales a Git (contiene, entre otras cosas,
+# la contraseña de PostgreSQL y el SECRET_KEY).
+
+# ============================================================
+# BASE DE DATOS
+# ============================================================
+# NetBox se conecta a través de la VIP de PostgreSQL (HAProxy +
+# Patroni), no directamente a un nodo. HAProxy dirige el tráfico
+# al Leader actual del clúster.
+DATABASES = {
+    'default': {
+        'NAME': 'netbox',
+        'USER': 'netbox',
+        'PASSWORD': 'CAMBIA_ESTA_CONTRASEÑA',
+        'HOST': 'postgres-vip.lab.local',
+        'PORT': '5432',
+        # Mantiene conexiones reutilizables unos minutos para evitar
+        # abrir una conexión nueva en cada petición.
+        'CONN_MAX_AGE': 300,
+    }
+}
+
+# ============================================================
+# REDIS
+# ============================================================
+# NetBox necesita dos bases lógicas distintas de Redis: una para
+# tareas en segundo plano y otra para caché. Comparten el mismo
+# servidor local, con IDs de base diferentes.
+REDIS = {
+    'tasks': {
+        'HOST': '127.0.0.1',
+        'PORT': 6379,
+        'PASSWORD': '',
+        'DATABASE': 0,
+        'SSL': False,
+    },
+    'caching': {
+        'HOST': '127.0.0.1',
+        'PORT': 6379,
+        'PASSWORD': '',
+        'DATABASE': 1,
+        'SSL': False,
+    }
+}
+
+# ============================================================
+# SECRET_KEY
+# ============================================================
+# Obligatoria. Genérala con:
+#   python3.12 -c "import secrets; print(secrets.token_urlsafe(64))"
+SECRET_KEY = 'GENERA_UN_VALOR_ALEATORIO_DE_64_BYTES'
+
+# ============================================================
+# ALLOWED_HOSTS
+# ============================================================
+# Nombres/IP desde los que NetBox puede atender peticiones web.
+ALLOWED_HOSTS = ['netbox.lab.local', 'netbox-backend.lab.local', '192.168.10.50']
+
+# ============================================================
+# API_TOKEN_PEPPERS
+# ============================================================
+# Protege los tokens API v2 (recomendados frente a v1, deprecados).
+# Genera el valor con:
+#   cd /opt/netbox/netbox/netbox && python3.12 ./generate_secret_key.py
+API_TOKEN_PEPPERS = {
+    1: 'GENERA_UN_VALOR_ALEATORIO',
+}

@@ -1,0 +1,9 @@
+# Copia como netbox_ips.txt y ajusta a la numeración real de tu laboratorio.
+192.168.10.21/24|postgresql1.lab.local|PostgreSQL Patroni 1
+192.168.10.22/24|postgresql2.lab.local|PostgreSQL Patroni 2
+192.168.10.23/24|postgresql3.lab.local|PostgreSQL Patroni 3
+192.168.10.30/24|HAProxy-1.lab.local|HAProxy nodo 1
+192.168.10.31/24|HAProxy-2.lab.local|HAProxy nodo 2
+192.168.10.32/24|postgres-vip.lab.local|VIP PostgreSQL
+192.168.10.33/24|netbox.lab.local|VIP Web
+192.168.10.50/24|netbox-backend.lab.local|VM NetBox
