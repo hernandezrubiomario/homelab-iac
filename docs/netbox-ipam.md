@@ -34,6 +34,11 @@ siempre a través de la VIP (`postgres-vip.lab.local:5432`). Si el
 Leader de Patroni cambia, HAProxy redirige el tráfico automáticamente
 sin tocar la configuración de NetBox.
 
+> El despliegue completo de ese clúster (Patroni + etcd + HAProxy +
+> Keepalived, con monitorización en Prometheus/Grafana) está
+> documentado como proyecto aparte:
+> [ha-postgresql-patroni](https://github.com/hernandezrubiomario/ha-postgresql-patroni).
+
 Alta de base de datos y usuario (desde cualquier nodo con `psql`):
 
 ```sql
