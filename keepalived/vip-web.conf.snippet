@@ -1,0 +1,53 @@
+# Añadir al final de /etc/keepalived/keepalived.conf.
+# Es una SEGUNDA instancia VRRP, independiente de la VIP de PostgreSQL
+# (virtual_router_id distinto: 52 en vez de 51), para no mezclar
+# tráfico ni funciones.
+#
+#   VIP PostgreSQL -> 192.168.10.32  (VRID 51, ya existente)
+#   VIP Web        -> 192.168.10.33  (VRID 52, esta instancia)
+
+# ---- En HAProxy-1 (MASTER) ----
+vrrp_instance VI_WEB {
+    state MASTER
+    interface enp1s0
+    virtual_router_id 52
+    priority 110
+    advert_int 1
+    unicast_src_ip 192.168.10.30
+    unicast_peer {
+        192.168.10.31
+    }
+    authentication {
+        auth_type PASS
+        auth_pass CAMBIA_ESTA_CLAVE
+    }
+    virtual_ipaddress {
+        192.168.10.33/24 dev enp1s0
+    }
+    track_script {
+        check_haproxy
+    }
+}
+
+# ---- En HAProxy-2 (BACKUP) ----
+# vrrp_instance VI_WEB {
+#     state BACKUP
+#     interface enp1s0
+#     virtual_router_id 52
+#     priority 100
+#     advert_int 1
+#     unicast_src_ip 192.168.10.31
+#     unicast_peer {
+#         192.168.10.30
+#     }
+#     authentication {
+#         auth_type PASS
+#         auth_pass CAMBIA_ESTA_CLAVE
+#     }
+#     virtual_ipaddress {
+#         192.168.10.33/24 dev enp1s0
+#     }
+#     track_script {
+#         check_haproxy
+#     }
+# }

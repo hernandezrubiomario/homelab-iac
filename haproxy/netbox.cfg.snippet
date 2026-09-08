@@ -1,0 +1,32 @@
+# Añadir al final de /etc/haproxy/haproxy.cfg en HAProxy-1 y HAProxy-2
+# (ambos nodos deben tener exactamente la misma configuración, ya que
+# Keepalived hace que sean intercambiables).
+
+# =================================================================
+# NETBOX - FRONTEND HTTP
+# Punto de entrada web para acceder a NetBox.
+# =================================================================
+frontend netbox_http
+    # HAProxy escucha peticiones HTTP en el puerto 80.
+    bind *:80
+    # NetBox es una aplicación web, por lo que este frontend trabaja
+    # en modo HTTP.
+    mode http
+    # Todo el tráfico recibido se envía al backend de NetBox.
+    default_backend netbox_backend
+
+# =================================================================
+# NETBOX - BACKEND
+# Backend formado por las instancias de NetBox/Nginx.
+# Actualmente solo existe una instancia.
+# =================================================================
+backend netbox_backend
+    # El tráfico entre HAProxy y Nginx es HTTP.
+    mode http
+    # Health check sobre la URL raíz de NetBox.
+    option httpchk GET /
+    # NetBox responde normalmente con HTTP 302 al acceder a "/"
+    # porque redirige al usuario hacia /login/.
+    http-check expect status 302
+    # Nginx escucha en 192.168.10.50:8080 y reenvía a Gunicorn.
+    server netbox1 192.168.10.50:8080 check
