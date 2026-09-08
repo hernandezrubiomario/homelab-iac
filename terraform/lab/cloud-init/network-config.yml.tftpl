@@ -1,0 +1,22 @@
+# ============================================================
+# CONFIGURACIÓN DE RED
+# ============================================================
+version: 2
+
+ethernets:
+  enp1s0:
+    # Aplica la configuración a la interfaz enp1s0.
+    match:
+      name: "enp1s0"
+    # IP reservada por Terraform en NetBox (ya incluye el
+    # prefijo de red, p. ej. 192.168.10.52/24).
+    addresses:
+      - ${vm_ip}
+    # Puerta de enlace predeterminada del laboratorio.
+    routes:
+      - to: 0.0.0.0/0
+        via: ${vm_gateway}
+    # Servidor DNS del laboratorio (FreeIPA).
+    nameservers:
+      addresses:
+        - ${vm_dns}

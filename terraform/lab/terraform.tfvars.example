@@ -1,0 +1,17 @@
+# Copia este fichero como terraform.tfvars y rellena tus valores reales.
+# terraform.tfvars NUNCA debe subirse al repositorio (ver .gitignore).
+
+# Clave pública SSH del nodo automation. Se instala en cada VM nueva
+# para que Ansible pueda administrarla sin contraseña.
+ssh_public_key = "ssh-ed25519 AAAA... usuario@automation.lab.local"
+
+# Clave pública SSH del host KVM. Permite acceso directo desde el
+# host donde se ejecuta Terraform.
+host_ssh_public_key = "ssh-ed25519 AAAA... usuario@host-kvm"
+
+# Opcional: sobrescribe los valores por defecto definidos en variables.tf
+# vm_gateway = "192.168.10.1"
+# vm_dns     = "192.168.10.10"
+
+# El token de NetBox NO se define aquí: se exporta como variable de
+# entorno NETBOX_API_TOKEN (ver README).

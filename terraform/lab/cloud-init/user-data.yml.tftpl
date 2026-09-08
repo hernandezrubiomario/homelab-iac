@@ -1,0 +1,48 @@
+#cloud-config
+# ============================================================
+# HOSTNAME
+# ============================================================
+# Nombre corto de la VM.
+hostname: ${vm_name}
+
+# Nombre completo (FQDN) dentro del dominio del laboratorio.
+fqdn: ${vm_name}.lab.local
+
+# Cloud-Init gestiona /etc/hosts con el hostname de la VM.
+manage_etc_hosts: true
+
+# ============================================================
+# USUARIO DE ADMINISTRACIÓN
+# ============================================================
+users:
+  - name: mario
+    # Añade al grupo wheel para permitir sudo.
+    groups: wheel
+    # Permite utilizar sudo sin contraseña.
+    # Necesario para que Ansible pueda utilizar become automáticamente.
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    # Shell por defecto del usuario.
+    shell: /bin/bash
+    # Instala las claves públicas necesarias para el acceso SSH.
+    ssh_authorized_keys:
+      # Clave pública del nodo automation.
+      - ${ssh_public_key}
+      # Clave pública del host KVM.
+      - ${host_ssh_public_key}
+
+# ============================================================
+# SSH
+# ============================================================
+# Deshabilita la autenticación SSH mediante contraseña.
+# El acceso SSH se realiza mediante clave pública.
+ssh_pwauth: false
+
+# ============================================================
+# DNS
+# ============================================================
+# Deja /etc/resolv.conf gestionado por NetworkManager, usando
+# el DNS definido en network-config y evitando conservar DNS
+# heredados de la plantilla.
+runcmd:
+  - rm -f /etc/resolv.conf
+  - ln -s /run/NetworkManager/resolv.conf /etc/resolv.conf

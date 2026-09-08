@@ -1,0 +1,18 @@
+# Estado de Terraform: contiene datos sensibles en texto plano
+# (IPs, IDs de recursos y a veces credenciales). Nunca se sube.
+*.tfstate
+*.tfstate.*
+.terraform.tfstate.lock.info
+
+# Valores reales de variables (IPs, claves, tokens).
+*.tfvars
+!terraform.tfvars.example
+
+# Caché de providers (SÍ se debe commitear .terraform.lock.hcl,
+# que fija las versiones de los providers; no lo ignores).
+.terraform/
+
+# Claves privadas, por si alguna acaba en este directorio por error.
+*.pem
+*.key
+id_ed25519*
