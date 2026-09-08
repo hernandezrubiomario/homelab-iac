@@ -1,0 +1,10 @@
+# Editores / SO
+.DS_Store
+*.swp
+*~
+
+# Por si alguna vez se copia la configuration.py real de NetBox
+# dentro del repo para editarla localmente.
+netbox/configuration.py
+
+# Ver también .gitignore específicos en terraform/lab/ y ansible/
