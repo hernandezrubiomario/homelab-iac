@@ -1,0 +1,17 @@
+# Inventario dinámico de Ansible obtenido desde NetBox.
+# Descubre automáticamente las VMs creadas por Terraform, sin
+# necesidad de añadirlas manualmente a hosts.yml.
+plugin: netbox.netbox.nb_inventory
+
+# URL de la API de NetBox.
+api_endpoint: http://netbox.lab.local
+
+# Token obtenido desde la variable de entorno NETBOX_API_TOKEN.
+# Nunca se escribe en texto plano en este fichero.
+token: "{{ lookup('env', 'NETBOX_API_TOKEN') }}"
+
+# Actualmente NetBox se publica sobre HTTP en el laboratorio.
+validate_certs: false
+
+# No necesitamos cargar Config Context de NetBox.
+config_context: false

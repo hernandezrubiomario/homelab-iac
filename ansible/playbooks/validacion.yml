@@ -1,0 +1,20 @@
+---
+- name: Validar administración con Ansible
+  # Ejecuta el playbook sobre todos los hosts del inventario
+  hosts: all
+  # Ejecuta las tareas con privilegios elevados (sudo/root)
+  become: true
+
+  tasks:
+    # Comprueba con qué usuario se están ejecutando realmente las tareas
+    - name: Comprobar el usuario efectivo
+      ansible.builtin.command: whoami
+      # Guarda la salida del comando en la variable resultado_usuario
+      register: resultado_usuario
+      # Indica que esta tarea solo consulta información y no realiza cambios
+      changed_when: false
+
+    # Muestra en pantalla el resultado obtenido anteriormente
+    - name: Mostrar el usuario efectivo
+      ansible.builtin.debug:
+        msg: "Ansible está ejecutando como: {{ resultado_usuario.stdout }}"

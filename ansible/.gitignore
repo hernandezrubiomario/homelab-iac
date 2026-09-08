@@ -1,0 +1,9 @@
+# Vault real, cifrado o no: nunca en texto plano al repo.
+group_vars/all/vault.yml
+!group_vars/all/vault.yml.example
+
+# Contraseña que desbloquea Ansible Vault (vive solo en el nodo automation).
+.vault_pass
+vault_pass
+
+*.retry

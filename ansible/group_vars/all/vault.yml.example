@@ -1,0 +1,8 @@
+# Este fichero es una PLANTILLA. El fichero real debe crearse cifrado
+# con Ansible Vault y nunca debe subirse a Git en texto plano:
+#
+#   ansible-vault create group_vars/all/vault.yml
+#
+# Contenido esperado:
+#
+# vault_ipa_admin_password: "CONTRASEÑA_REAL_DEL_ADMIN_DE_FREEIPA"

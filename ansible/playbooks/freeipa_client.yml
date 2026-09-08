@@ -1,0 +1,58 @@
+---
+# ============================================================
+# ENROLAMIENTO DE LA VM EN FREEIPA
+# ============================================================
+- name: Integrar nueva VM con FreeIPA
+  hosts: "{{ vm_name }}"
+  become: true
+  vars_files:
+    - ../group_vars/all/vault.yml
+  vars:
+    # Servidor FreeIPA.
+    ipaclient_servers:
+      - ipa.lab.local
+    # Dominio y realm del laboratorio.
+    ipaclient_domain: lab.local
+    ipaclient_realm: LAB.LOCAL
+    # Crear HOME al iniciar sesión.
+    ipaclient_mkhomedir: true
+    # Credenciales administrativas almacenadas en Vault.
+    ipaadmin_principal: admin
+    ipaadmin_password: "{{ vault_ipa_admin_password }}"
+  roles:
+    - role: freeipa.ansible_freeipa.ipaclient
+      state: present
+
+# ============================================================
+# REGISTRO DNS EN FREEIPA
+# ============================================================
+- name: Registrar DNS de la nueva VM en FreeIPA
+  hosts: ipa
+  gather_facts: false
+  become: false
+  vars_files:
+    - ../group_vars/all/vault.yml
+  tasks:
+    # rocky-testXX.lab.local -> IP de la VM
+    - name: Crear registro DNS A
+      freeipa.ansible_freeipa.ipadnsrecord:
+        ipaadmin_principal: admin
+        ipaadmin_password: "{{ vault_ipa_admin_password }}"
+        ipaapi_context: server
+        zone_name: lab.local
+        name: "{{ vm_name }}"
+        record_type: A
+        record_value: "{{ vm_ip }}"
+        state: present
+
+    # IP de la VM -> rocky-testXX.lab.local
+    - name: Crear registro DNS PTR
+      freeipa.ansible_freeipa.ipadnsrecord:
+        ipaadmin_principal: admin
+        ipaadmin_password: "{{ vault_ipa_admin_password }}"
+        ipaapi_context: server
+        zone_name: 10.168.192.in-addr.arpa
+        name: "{{ vm_ip.split('.')[-1] }}"
+        record_type: PTR
+        record_value: "{{ vm_name }}.lab.local."
+        state: present

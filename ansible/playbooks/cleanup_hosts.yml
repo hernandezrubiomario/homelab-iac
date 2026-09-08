@@ -1,0 +1,27 @@
+---
+- name: Limpiar /etc/hosts y usar FreeIPA DNS
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Backup de /etc/hosts
+      copy:
+        src: /etc/hosts
+        dest: /etc/hosts.bak-freeipa
+        remote_src: true
+        mode: '0644'
+
+    - name: Eliminar entradas manuales de la red del laboratorio
+      lineinfile:
+        path: /etc/hosts
+        regexp: '^192\.168\.10\.'
+        state: absent
+
+    - name: Verificar resolución DNS mediante FreeIPA
+      command: getent hosts netbox.lab.local
+      register: dns_test
+      changed_when: false
+
+    - name: Mostrar resultado
+      debug:
+        var: dns_test.stdout
