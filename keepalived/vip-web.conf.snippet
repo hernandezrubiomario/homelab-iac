@@ -5,6 +5,13 @@
 #
 #   VIP PostgreSQL -> 192.168.10.32  (VRID 51, ya existente)
 #   VIP Web        -> 192.168.10.33  (VRID 52, esta instancia)
+#
+# Requisitos:
+#  - "check_haproxy" es el vrrp_script que ya existe en el keepalived.conf
+#    del clúster PostgreSQL HA (ver el repositorio ha-postgresql-patroni);
+#    aquí se reutiliza, no se redefine.
+#  - Sustituye CAMBIA_ESTA_CLAVE por una clave propia (Keepalived solo usa
+#    los 8 primeros caracteres con auth_type PASS) y usa la misma en ambos nodos.
 
 # ---- En HAProxy-1 (MASTER) ----
 vrrp_instance VI_WEB {

@@ -101,7 +101,9 @@ arquitectura, las decisiones de diseño y cómo usarla.
 - NetBox operativo con el prefijo de red y el pool de IPs para
   Terraform ya creados (ver `docs/netbox-ipam.md`).
 - Un clúster PostgreSQL en alta disponibilidad (Patroni + HAProxy +
-  Keepalived) si vas a reutilizarlo para NetBox u otros servicios.
+  Keepalived) si vas a reutilizarlo para NetBox u otros servicios. El
+  que usa este laboratorio está documentado en su propio repositorio:
+  [ha-postgresql-patroni](https://github.com/hernandezrubiomario/ha-postgresql-patroni).
 
 ## Uso rápido
 
