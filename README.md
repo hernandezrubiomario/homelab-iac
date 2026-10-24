@@ -18,7 +18,8 @@ objetivo es automatizar todo ese flujo de extremo a extremo:
 Terraform → KVM → NetBox → Cloud-Init → Ansible → FreeIPA → DNS
 ```
 
-Con un único comando (`./deploy_vm.sh <nombre>`), una VM nueva queda
+Con un único comando (`./deploy_vm.sh <nombre>`) sobre la infraestructura
+ya montada, una VM nueva queda
 creada, con IP reservada, configurada en su primer arranque,
 administrable por Ansible, enrolada en FreeIPA y con su DNS (A/PTR)
 publicado.
@@ -52,7 +53,7 @@ flowchart TD
         VIP_PG[VIP PostgreSQL]
     end
 
-    TF -- "1. crea disco + reserva IP" --> NBX
+    TF -- "1. reserva IP + registra VM" --> NBX
     TF -- "2. crea la VM" --> VM[Nueva VM]
     ANS -- "3. descubre la VM<br/>(inventario dinámico)" --> NBX
     ANS -- "4. enrola + registra DNS" --> IPA
@@ -92,7 +93,22 @@ Cada `docs/*.md` documenta el resultado final de esa pieza —no el
 proceso de prueba y error con el que se construyó—, con la
 arquitectura, las decisiones de diseño y cómo usarla.
 
-## Requisitos previos
+## Alcance
+
+Este repositorio documenta y versiona un laboratorio concreto; no es un
+proyecto que se pueda clonar y ejecutar de forma aislada. Terraform y Ansible
+automatizan la creación de una VM nueva *sobre* una infraestructura que ya
+existe (KVM, NetBox, FreeIPA y el nodo de automatización). Esa base se montó
+siguiendo la documentación de `docs/`.
+
+Lo que sí puede hacer quien lo lea:
+
+- Revisar la arquitectura, las decisiones de diseño y el código.
+- Validar la sintaxis sin ningún servidor (`terraform validate`,
+  `ansible-playbook --syntax-check`).
+- Reutilizar fragmentos en su propio laboratorio, adaptando IPs y nombres.
+
+## Infraestructura previa
 
 - Host KVM con `libvirt` y una plantilla base (`rocky9-template.qcow2`).
 - Nodo `automation` con Ansible Core instalado, con acceso SSH sin
@@ -104,19 +120,6 @@ arquitectura, las decisiones de diseño y cómo usarla.
   Keepalived) si vas a reutilizarlo para NetBox u otros servicios. El
   que usa este laboratorio está documentado en su propio repositorio:
   [ha-postgresql-patroni](https://github.com/hernandezrubiomario/ha-postgresql-patroni).
-
-## Uso rápido
-
-```bash
-cd terraform/lab
-terraform init
-cp terraform.tfvars.example terraform.tfvars   # rellena tus claves SSH reales
-export NETBOX_API_TOKEN='...'
-
-./deploy_vm.sh mi-nueva-vm
-```
-
-Ver `docs/terraform.md` para el detalle de qué hace cada paso.
 
 ## Seguridad y datos sensibles
 
